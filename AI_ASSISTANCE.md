@@ -50,6 +50,23 @@ src/
   
   This demonstrated strong debugging skills and the ability to work with real-world API integration challenges.
 
+### UX Improvements
+- **Loading & Success States**: I identified that the user experience needed better feedback during API calls and after successful validation. I proposed adding:
+  - A loading indicator during API requests
+  - Success message when validation completes
+  - Smooth animations for better visual feedback
+  
+  I collaborated with AI to implement these features, where I:
+  - Designed the state management approach (`isLoading`, `success` states)
+  - Determined when to show/hide each state
+  - Specified the UX requirements (what messages to show, when to clear them)
+  
+  AI helped with:
+  - CSS animation keyframes (`pulse` for loading, `slideIn` for success)
+  - Color palette suggestions for loading (blue) and success (green) states
+  
+  This improvement significantly enhanced user feedback and shows attention to UX details.
+
 
 
 ## AI-Assisted Portions
