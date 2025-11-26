@@ -9,6 +9,8 @@ export function AddressValidator() {
   const [postalCodeOptions, setPostalCodeOptions] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [isDropdown, setIsDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const debouncedLocality = useDebounce(locality, 1000);
   const debouncedPostalCode = useDebounce(postalCode, 1000);
@@ -24,6 +26,8 @@ export function AddressValidator() {
     const fetchByLocality = async () => {
       try {
         setError('');
+        setSuccess(false);
+        setIsLoading(true);
         const response = await fetch(
           `https://openplzapi.org/de/Localities?name=${encodeURIComponent(debouncedLocality)}`
         );
@@ -36,6 +40,7 @@ export function AddressValidator() {
             setPostalCode(postalCodes[0]);
             setIsDropdown(false);
             setPostalCodeOptions([]);
+            setSuccess(true);
           } else {
             setPostalCodeOptions(postalCodes);
             setIsDropdown(true);
@@ -49,6 +54,8 @@ export function AddressValidator() {
       } catch (err) {
         setError('Failed to fetch locality data');
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -64,6 +71,8 @@ export function AddressValidator() {
     const fetchByPostalCode = async () => {
       try {
         setError('');
+        setSuccess(false);
+        setIsLoading(true);
         const response = await fetch(
           `https://openplzapi.org/de/Localities?postalCode=${encodeURIComponent(debouncedPostalCode)}`
         );
@@ -72,12 +81,15 @@ export function AddressValidator() {
         if (data && data.length > 0) {
           // Use the first locality name if multiple exist
           setLocality(data[0].name);
+          setSuccess(true);
         } else {
           setError('Invalid postal code');
         }
       } catch (err) {
         setError('Failed to fetch postal code data');
         console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -88,6 +100,7 @@ export function AddressValidator() {
     setPostalCode(selectedCode);
     setIsDropdown(false);
     setPostalCodeOptions([]);
+    setSuccess(true);
   };
 
   return (
@@ -130,7 +143,9 @@ export function AddressValidator() {
         )}
       </div>
 
+      {isLoading && <div className="loading-message">Loading...</div>}
       {error && <div className="error-message">{error}</div>}
+      {success && !error && <div className="success-message">✓ Valid address found!</div>}
     </div>
   );
 }
